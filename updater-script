@@ -1,0 +1,24 @@
+ui_print("********************************************");
+ui_print("                                            ");
+ui_print("           crpalmer's kernel                ");
+ui_print("                                            ");
+ui_print("Version: @@VERSION@@                        ");
+ui_print("                                            ");
+ui_print("********************************************");
+
+ui_print("Mounting /system");
+run_program("/sbin/mount", "@@SYSTEM_PARTITION@@", "/system");
+
+ui_print("Installing modules");
+package_extract_dir("system", "/system");
+
+ui_print("Unmounting Filesystems");
+unmount("/system");
+
+ui_print("Flashing boot.img");
+
+assert(package_extract_file("boot.img", "/tmp/boot.img"),
+	write_raw_image("/tmp/boot.img", "boot"));
+
+ui_print("Done");
+

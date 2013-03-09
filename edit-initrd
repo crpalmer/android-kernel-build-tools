@@ -1,0 +1,4 @@
+#!/bin/sh
+
+rm -rf initrd 2>/dev/null
+mkdir initrd && (cd initrd && gunzip -f < ../initrd.img | cpio --extract)
