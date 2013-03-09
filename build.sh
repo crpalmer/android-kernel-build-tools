@@ -14,8 +14,6 @@ TOOLS_DIR=`dirname "$0"`
 
 # -----------------------
 
-VERSION=`cat $LOCAL_BUILD_DIR/version`
-
 ZIP=$TARGET_DIR/update-$VERSION.zip
 
 UPDATE_ROOT=$LOCAL_BUILD_DIR/update
@@ -73,10 +71,13 @@ find . -name '*.ko' -exec cp {} $UPDATE_ROOT/system/lib/modules/ \;
 
 mkdir -p $UPDATE_ROOT/META-INF/com/google/android
 cp $TOOLS_DIR/update-binary $UPDATE_ROOT/META-INF/com/google/android
-sed -e "s/@@VERSION@@/$VERSION/" \
-    -e "s|@@SYSTEM_PARTITION@@|$SYSTEM_PARTITION|" \
-    < $TOOLS_DIR/updater-script \
-    > $UPDATE_ROOT/META-INF/com/google/android/updater-script
+(
+    cat <<EOF
+$BANNER
+EOF
+  sed -e "s|@@SYSTEM_PARTITION@@|$SYSTEM_PARTITION|" \
+      < $TOOLS_DIR/updater-script
+) > $UPDATE_ROOT/META-INF/com/google/android/updater-script
 
 abootimg --create $UPDATE_ROOT/boot.img -k arch/arm/boot/zImage -f $LOCAL_BUILD_DIR/bootimg.cfg -r $LOCAL_BUILD_DIR/initrd.img
 (

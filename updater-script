@@ -1,10 +1,3 @@
-ui_print("********************************************");
-ui_print("                                            ");
-ui_print("           crpalmer's kernel                ");
-ui_print("                                            ");
-ui_print("Version: @@VERSION@@                        ");
-ui_print("                                            ");
-ui_print("********************************************");
 
 ui_print("Mounting /system");
 run_program("/sbin/mount", "@@SYSTEM_PARTITION@@", "/system");
