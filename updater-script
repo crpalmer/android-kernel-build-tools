@@ -10,8 +10,7 @@ unmount("/system");
 
 ui_print("Flashing boot.img");
 
-assert(package_extract_file("boot.img", "/tmp/boot.img"),
-	write_raw_image("/tmp/boot.img", "boot"));
+assert(@@FLASH_BOOT@@);
 
 ui_print("Done");
 

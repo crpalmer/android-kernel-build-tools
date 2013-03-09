@@ -56,11 +56,12 @@ then
     rm -f $LOCAL_BUILD_DIR/update.zip
 fi
 
-make	$DEFCONFIG
+make	ARCH=arm $DEFCONFIG
 
-perl -pi -e 's/CONFIG_LOCALVERSION=".*"/CONFIG_LOCALVERSION="-'"$VERSION"'"/' .config
+perl -pi -e 's/(CONFIG_LOCALVERSION="[^"]*)/\1-'"$VERSION"'"/' .config
 
 make	\
+	ARCH=arm \
 	CROSS_COMPILE="$CROSS_COMPILE" \
 	HOST_CC="$HOST_CC" \
 	-j$N_CORES
@@ -77,6 +78,7 @@ cp $TOOLS_DIR/update-binary $UPDATE_ROOT/META-INF/com/google/android
 $BANNER
 EOF
   sed -e "s|@@SYSTEM_PARTITION@@|$SYSTEM_PARTITION|" \
+      -e "s|@@FLASH_BOOT@@|$FLASH_BOOT|" \
       < $TOOLS_DIR/updater-script
 ) > $UPDATE_ROOT/META-INF/com/google/android/updater-script
 
