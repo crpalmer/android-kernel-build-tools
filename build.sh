@@ -19,8 +19,9 @@ VERSION=`cat $LOCAL_BUILD_DIR/version`
 ZIP=$TARGET_DIR/update-$VERSION.zip
 
 UPDATE_ROOT=$LOCAL_BUILD_DIR/update
-CERT=$LOCAL_BUILD_DIR/keys/certificate.pem
-KEY=$LOCAL_BUILD_DIR/keys/key.pk8
+KEYS=$LOCAL_BUILD_DIR/keys
+CERT=$KEYS/certificate.pem
+KEY=$KEYS/key.pk8
 
 msg Building: $VERSION
 echo "   Local build dir: $LOCAL_BUILD_DIR"
@@ -37,7 +38,8 @@ else
     msg Regenerating keys, pleae enter the required information.
 
     (
-	cd `dirname $CERT`
+	mkdir -p $KEYS
+	cd $KEYS
 	openssl genrsa -out key.pem 1024 && \
 	openssl req -new -key key.pem -out request.pem && \
 	openssl x509 -req -days 9999 -in request.pem -signkey key.pem -out certificate.pem && \
