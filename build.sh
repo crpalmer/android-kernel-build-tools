@@ -22,6 +22,7 @@ CERT=$KEYS/certificate.pem
 KEY=$KEYS/key.pk8
 
 msg Building: $VERSION
+echo "   Defconfig:       $DEFCONFIG"
 echo "   Local build dir: $LOCAL_BUILD_DIR"
 echo "   Target dir:      $TARGET_DIR"
 echo "   Tools dir:       $TOOLS_DIR"
@@ -55,7 +56,7 @@ then
     rm -f $LOCAL_BUILD_DIR/update.zip
 fi
 
-make	crpalmer_defconfig
+make	$DEFCONFIG
 
 perl -pi -e 's/CONFIG_LOCALVERSION=".*"/CONFIG_LOCALVERSION="-'"$VERSION"'"/' .config
 
