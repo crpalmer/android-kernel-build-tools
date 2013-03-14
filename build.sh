@@ -11,6 +11,7 @@ msg() {
 . crpalmer-build-config
 
 TOOLS_DIR=`dirname "$0"`
+MAKE=$TOOLS_DIR/make.sh
 
 # -----------------------
 
@@ -56,15 +57,11 @@ then
     rm -f $LOCAL_BUILD_DIR/update.zip
 fi
 
-make	ARCH=arm $DEFCONFIG
+$MAKE $DEFCONFIG
 
 perl -pi -e 's/(CONFIG_LOCALVERSION="[^"]*)/\1-'"$VERSION"'"/' .config
 
-make	\
-	ARCH=arm \
-	CROSS_COMPILE="$CROSS_COMPILE" \
-	HOST_CC="$HOST_CC" \
-	-j$N_CORES
+$MAKE -j$N_CORES
 
 msg Kernel built successfully, building $ZIP
 
