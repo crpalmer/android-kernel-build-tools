@@ -14,6 +14,7 @@ LOCAL_BUILD_DIR=dna
 TARGET_DIR=~/dna/updates
 SYSTEM_PARTITION="/dev/block/mmcblk0p32"
 BANNER=
+FLASH_BOOT='package_extract_file("boot.img", "/tmp/boot.img"), write_raw_image("/tmp/boot.img", "boot")'
 
 The file is "crpalmer-build-config".  In the LOCAL_BUILD_DIR you
 must have the following files:
