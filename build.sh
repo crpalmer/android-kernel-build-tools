@@ -79,7 +79,14 @@ EOF
       < $TOOLS_DIR/updater-script
 ) > $UPDATE_ROOT/META-INF/com/google/android/updater-script
 
-abootimg --create $UPDATE_ROOT/boot.img -k arch/arm/boot/zImage -f $LOCAL_BUILD_DIR/bootimg.cfg -r $LOCAL_BUILD_DIR/initrd.img
+if [ "$INITRD_FROM" == "" ]; then
+    INITRD=$LOCAL_BUILD_DIR/initrd.img
+else
+    INITRD=$LOCAL_BUILD_DIR/initrd.tmp
+    abootimg -x "$INITRD_FROM" /dev/null /dev/null $INITRD /dev/null
+fi
+
+abootimg --create $UPDATE_ROOT/boot.img -k arch/arm/boot/zImage -f $LOCAL_BUILD_DIR/bootimg.cfg -r $INITRD
 (
     cd $UPDATE_ROOT
     zip -r ../update.zip .
