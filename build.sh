@@ -15,7 +15,7 @@ MAKE=$TOOLS_DIR/make.sh
 
 # -----------------------
 
-ZIP=$TARGET_DIR/update-$VERSION.zip
+ZIP=$TARGET_DIR/update-$VERSION
 
 UPDATE_ROOT=$LOCAL_BUILD_DIR/update
 KEYS=$LOCAL_BUILD_DIR/keys
@@ -63,7 +63,16 @@ perl -pi -e 's/(CONFIG_LOCALVERSION="[^"]*)/\1-'"$VERSION"'"/' .config
 
 $MAKE -j$N_CORES
 
-msg Kernel built successfully, building $ZIP
+msg Kernel built successfully, building $ZIP*.zip
+
+mkdir -p $UPDATE_ROOT
+cp -r $TOOLS_DIR/kernel $UPDATE_ROOT/kernel
+if [ -e $LOCAL_BUILD_DIR/system ]
+then
+    mkdir -p $LOCAL_BUILD_DIR
+    cp -r $LOCAL_BUILD_DIR/system $UPDATE_ROOT/system
+    permissions=`( cd $LOCAL_BUILD_DIR/system && find . -type f -exec echo 'set_perm(0, 0, 0755, "/system/{}");' \; )`
+fi
 
 mkdir -p $UPDATE_ROOT/system/lib/modules
 find . -name '*.ko' -exec cp {} $UPDATE_ROOT/system/lib/modules/ \;
@@ -76,21 +85,17 @@ $BANNER
 EOF
   sed -e "s|@@SYSTEM_PARTITION@@|$SYSTEM_PARTITION|" \
       -e "s|@@FLASH_BOOT@@|$FLASH_BOOT|" \
+      -e "s|@@FIX_PERMISSIONS@@|$permissions |" \
       < $TOOLS_DIR/updater-script
 ) > $UPDATE_ROOT/META-INF/com/google/android/updater-script
 
-if [ "$INITRD_FROM" == "" ]; then
-    INITRD=$LOCAL_BUILD_DIR/initrd.img
-else
-    INITRD=$LOCAL_BUILD_DIR/initrd.tmp
-    abootimg -x "$INITRD_FROM" /dev/null /dev/null $INITRD /dev/null
-fi
+cp arch/arm/boot/zImage $UPDATE_ROOT/kernel
 
-abootimg --create $UPDATE_ROOT/boot.img -k arch/arm/boot/zImage -f $LOCAL_BUILD_DIR/bootimg.cfg -r $INITRD
 (
     cd $UPDATE_ROOT
     zip -r ../update.zip .
 )
-java -jar $TOOLS_DIR/signapk.jar $CERT $KEY $LOCAL_BUILD_DIR/update.zip $ZIP
+
+java -jar $TOOLS_DIR/signapk.jar $CERT $KEY $LOCAL_BUILD_DIR/update.zip $ZIP.zip
 
 msg COMPLETE

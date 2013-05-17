@@ -4,9 +4,21 @@ run_program("/sbin/mount", "@@SYSTEM_PARTITION@@", "/system");
 
 ui_print("Installing modules");
 package_extract_dir("system", "/system");
-
+@@FIX_PERMISSIONS@@
 ui_print("Unmounting Filesystems");
 unmount("/system");
+
+ui_print("AnyKernel Updater by Koush.");
+ui_print("Extracting Kernel files...");
+package_extract_dir("kernel", "/tmp");
+ui_print("Installing kernel...");
+set_perm(0, 0, 0777, "/tmp/dump_image");
+set_perm(0, 0, 0777, "/tmp/mkbootimg.sh");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg");
+run_program("/tmp/dump_image", "boot", "/tmp/boot.img");
+run_program("/tmp/unpackbootimg", "/tmp/boot.img", "/tmp/");
+run_program("/tmp/mkbootimg.sh");
 
 ui_print("Flashing boot.img");
 
