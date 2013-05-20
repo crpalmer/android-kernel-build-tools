@@ -66,7 +66,15 @@ $MAKE -j$N_CORES
 msg Kernel built successfully, building $ZIP*.zip
 
 mkdir -p $UPDATE_ROOT
-cp -r $TOOLS_DIR/kernel $UPDATE_ROOT/kernel
+
+if [ "$INITRD" == "" ]
+then
+    cp -r $TOOLS_DIR/kernel $UPDATE_ROOT/kernel
+    cp arch/arm/boot/zImage $UPDATE_ROOT/kernel
+else
+    abootimg --create $UPDATE_ROOT/boot.img -k arch/arm/boot/zImage -f $LOCAL_BUILD_DIR/bootimg.cfg -r $INITRD
+fi
+
 if [ -e $LOCAL_BUILD_DIR/system ]
 then
     mkdir -p $LOCAL_BUILD_DIR
@@ -88,8 +96,6 @@ EOF
       -e "s|@@FIX_PERMISSIONS@@|$permissions |" \
       < $TOOLS_DIR/updater-script
 ) > $UPDATE_ROOT/META-INF/com/google/android/updater-script
-
-cp arch/arm/boot/zImage $UPDATE_ROOT/kernel
 
 (
     cd $UPDATE_ROOT
