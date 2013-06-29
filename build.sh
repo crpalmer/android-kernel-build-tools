@@ -6,12 +6,14 @@ msg() {
     echo
 }
 
+export CCACHE_DIR=~/.ccache.dna-kernel
+
 # -----------------------
 
 . crpalmer-build-config
 
 TOOLS_DIR=`dirname "$0"`
-MAKE=$TOOLS_DIR/make.sh
+MAKE=$TOOLS_DIR/make-common.sh
 
 # -----------------------
 
@@ -22,11 +24,20 @@ KEYS=$LOCAL_BUILD_DIR/keys
 CERT=$KEYS/certificate.pem
 KEY=$KEYS/key.pk8
 
+if [ "$USE_CCACHE" = 1 ]; then
+   export CROSS_COMPILE="ccache $CROSS_COMPILE"
+   export HOST_CC="ccache $HOST_CC"
+fi
+
 msg Building: $VERSION
 echo "   Defconfig:       $DEFCONFIG"
+echo
 echo "   Local build dir: $LOCAL_BUILD_DIR"
 echo "   Target dir:      $TARGET_DIR"
 echo "   Tools dir:       $TOOLS_DIR"
+echo
+echo "   Cross compiler:  $CROSS_COMPILE"
+echo "   Host compiler:   $HOST_CC"
 echo
 echo "   Target system partition: $SYSTEM_PARTITION"
 echo

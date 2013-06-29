@@ -2,8 +2,5 @@
 
 . crpalmer-build-config
 
-make    \
-        ARCH=arm \
-        CROSS_COMPILE="$CROSS_COMPILE" \
-        HOST_CC="$HOST_CC" \
-	$*
+TOOLS_DIR=`dirname "$0"`
+$TOOLS_DIR/make-common.sh $*
