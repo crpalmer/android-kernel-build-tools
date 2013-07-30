@@ -27,6 +27,9 @@ KEY=$KEYS/key.pk8
 if [ "$USE_CCACHE" = 1 ]; then
    export CROSS_COMPILE="ccache $CROSS_COMPILE"
    export HOST_CC="ccache $HOST_CC"
+else
+   export CROSS_COMPILE="$CROSS_COMPILE"
+   export HOST_CC="$HOST_CC"
 fi
 
 msg Building: $VERSION
