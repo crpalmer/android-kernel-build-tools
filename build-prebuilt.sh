@@ -85,6 +85,12 @@ fi
     #RAMDISK_OFFSET="--ramdisk_offset $ramdisk_addr"
 #fi
 
+if [ "$RAMDISK" =  "" -a -d "$INITRD" ]; then
+    msg "Building initrd.img"
+    RAMDISK="$O"/initrd.img
+    (set -x ; cd $INITRD ; find . '!' -name '.*' | sort | cpio -R 0:0 -H newc -o | gzip -f > $RAMDISK)
+fi
+
 if [ "$DT" != "" ]; then
     DT_ARG="--dt $DT"
     ZIMAGE=zImage
