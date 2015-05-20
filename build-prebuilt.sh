@@ -100,12 +100,14 @@ fi
 
 msg Creating boot.img
 
+(set -x
 $TOOLS_DIR/mkbootimg \
 	-o $BOOT_IMG \
 	--kernel $O/arch/arm/boot/$ZIMAGE \
 	--ramdisk $RAMDISK \
 	--cmdline "$cmd_line" \
 	$BASE $PAGESIZE $RAMDISK_OFFSET $DT_ARG
+)
 
 msg COMPLETE
 echo $BOOT_IMG
