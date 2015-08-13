@@ -59,6 +59,7 @@ echo
 echo "   Object dir:      $O"
 echo
 echo "   Device tree img: $DT"
+echo "   Initrd:          $INITRD"
 echo "   Ramdisk:         $RAMDISK"
 echo "   Boot img:        $BOOT_IMG"
 echo
